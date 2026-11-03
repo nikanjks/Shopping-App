@@ -12,17 +12,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShoppingApp"
         tools:targetApi="31">
+
+        <!-- Launcher: Welcome / Home screen -->
         <activity
-            android:name=".MainActivity"
+            android:name=".WelcomeActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ShoppingApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".AboutDevelopersActivity"
+            android:exported="false"
+            android:label="About Developers"
+            android:theme="@style/Theme.ShoppingApp.NoActionBar" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:label="Login"
+            android:theme="@style/Theme.ShoppingApp.NoActionBar" />
+
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false"
+            android:label="Account Registration"
+            android:theme="@style/Theme.ShoppingApp.NoActionBar" />
+
+        <!-- Shopping app (Customer Dashboard, Cart, Order History) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.ShoppingApp.NoActionBar" />
+
     </application>
 
 </manifest>
