@@ -5,7 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Base64;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,12 +18,13 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "shopping_app.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_PRODUCTS = "products";
     private static final String TABLE_CART = "cart";
     private static final String TABLE_ORDERS = "orders";
     private static final String TABLE_ORDER_ITEMS = "order_items";
+    private static final String TABLE_USERS = "users";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -27,6 +32,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        createUsersTable(db);
+
         db.execSQL(
                 "CREATE TABLE " + TABLE_PRODUCTS + " (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -91,9 +98,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("description", description);
         values.put("price", price);
         values.put("image_name", imageName);
-
         db.insert(TABLE_PRODUCTS, null, values);
     }
+
+    // PRODUCTS
 
     public ArrayList<Product> getAllProducts() {
         ArrayList<Product> products = new ArrayList<>();
@@ -122,6 +130,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return products;
     }
+
+    // CART
 
     public boolean addToCart(long productId, int quantity) {
         if (quantity < 1) {
@@ -244,6 +254,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return total;
     }
 
+    // ORDERS
+
     public long checkout() {
         SQLiteDatabase db = getWritableDatabase();
         long orderId = -1;
@@ -258,6 +270,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
 
             double total = 0;
+
             for (CartItem item : items) {
                 total += item.getSubtotal();
             }
@@ -361,12 +374,108 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return items;
     }
 
+    // USERS (Login / Signup)
+
+    private void createUsersTable(SQLiteDatabase db) {
+        db.execSQL(
+                "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + " (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "full_name TEXT NOT NULL, " +
+                        "address TEXT NOT NULL, " +
+                        "phone TEXT NOT NULL, " +
+                        "email TEXT NOT NULL, " +
+                        "username TEXT NOT NULL UNIQUE COLLATE NOCASE, " +
+                        "password_hash TEXT NOT NULL, " +
+                        "salt TEXT NOT NULL)"
+        );
+    }
+
+    public boolean usernameExists(String username) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        try (Cursor cursor = db.query(
+                TABLE_USERS,
+                new String[]{"id"},
+                "username = ? COLLATE NOCASE",
+                new String[]{username},
+                null,
+                null,
+                null
+        )) {
+            return cursor.moveToFirst();
+        }
+    }
+
+    public boolean registerUser(String fullName, String address, String phone,
+                                String email, String username, String password) {
+        String salt = generateSalt();
+
+        ContentValues values = new ContentValues();
+        values.put("full_name", fullName);
+        values.put("address", address);
+        values.put("phone", phone);
+        values.put("email", email);
+        values.put("username", username);
+        values.put("salt", salt);
+        values.put("password_hash", hashPassword(password, salt));
+
+        return getWritableDatabase().insert(TABLE_USERS, null, values) != -1;
+    }
+
+    /** Returns the user's full name if the login is correct, otherwise null. */
+    public String loginUser(String username, String password) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        try (Cursor cursor = db.query(
+                TABLE_USERS,
+                new String[]{"full_name", "password_hash", "salt"},
+                "username = ? COLLATE NOCASE",
+                new String[]{username},
+                null,
+                null,
+                null
+        )) {
+            if (cursor.moveToFirst()) {
+                String storedHash = cursor.getString(1);
+                String salt = cursor.getString(2);
+
+                if (storedHash.equals(hashPassword(password, salt))) {
+                    return cursor.getString(0);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static String generateSalt() {
+        byte[] bytes = new byte[16];
+        new SecureRandom().nextBytes(bytes);
+        return Base64.encodeToString(bytes, Base64.NO_WRAP);
+    }
+
+    private static String hashPassword(String password, String salt) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(
+                    (salt + password).getBytes(StandardCharsets.UTF_8)
+            );
+            return Base64.encodeToString(hash, Base64.NO_WRAP);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // UPGRADE
+
     @Override
     public void onUpgrade(
             SQLiteDatabase db,
             int oldVersion,
             int newVersion
     ) {
-        // Add database migration logic here if the schema changes.
+        if (oldVersion < 2) {
+            createUsersTable(db);
+        }
     }
 }
