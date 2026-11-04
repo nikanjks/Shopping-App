@@ -1,5 +1,6 @@
 package com.apts.shoppingapp.ui.gallery;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ public class GalleryFragment extends Fragment {
             TextView emptyMessage = new TextView(requireContext());
             emptyMessage.setText("Your cart is empty.");
             emptyMessage.setTextSize(16);
+            emptyMessage.setTextColor(Color.parseColor("#4fc0e8"));
             container.addView(emptyMessage);
         }
 
@@ -133,6 +135,11 @@ public class GalleryFragment extends Fragment {
 
         itemBinding.btnRemoveCartItem.setOnClickListener(view -> {
             databaseHelper.removeFromCart(item.getProductId());
+            Toast.makeText(
+                    requireContext(),
+                    item.getName() + " removed from cart.",
+                    Toast.LENGTH_SHORT
+            ).show();
             displayCart();
         });
 
@@ -143,7 +150,7 @@ public class GalleryFragment extends Fragment {
         if (databaseHelper.getCartItems().isEmpty()) {
             Toast.makeText(
                     requireContext(),
-                    "Your cart is empty.",
+                    "Your cart is empty. Please add an item first.",
                     Toast.LENGTH_SHORT
             ).show();
             return;
@@ -154,7 +161,7 @@ public class GalleryFragment extends Fragment {
         if (orderId > 0) {
             Toast.makeText(
                     requireContext(),
-                    "Order placed successfully! Order #" + orderId,
+                    "Checkout successful! Order #" + orderId,
                     Toast.LENGTH_LONG
             ).show();
 

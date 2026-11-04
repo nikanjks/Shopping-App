@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         sessionManager.login(username, fullName);
-        Toast.makeText(this, "Welcome, " + fullName + "!",
+        Toast.makeText(this, "Successful login! Welcome, " + fullName + "!",
                 Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(this, MainActivity.class);

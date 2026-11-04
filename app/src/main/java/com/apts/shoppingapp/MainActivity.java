@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -62,10 +62,34 @@ public class MainActivity extends AppCompatActivity {
                 appBarConfiguration
         );
 
-        NavigationUI.setupWithNavController(
-                navigationView,
-                navController
-        );
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            drawer.closeDrawer(androidx.core.view.GravityCompat.START);
+            if (id == R.id.nav_logout) {
+                showLogoutConfirmationDialog();
+                return true;
+            } else {
+                return NavigationUI.onNavDestinationSelected(item, navController) || item.getItemId() == R.id.nav_home;
+            }
+        });
+    }
+
+    private void showLogoutConfirmationDialog() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to log out?")
+                .setPositiveButton("Yes", (dialog, which) -> performLogout())
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void performLogout() {
+        new SessionManager(this).logout();
+        Toast.makeText(this, "Successfully logged out", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -77,12 +101,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_logout) {
-            new SessionManager(this).logout();
-
-            Intent intent = new Intent(this, WelcomeActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            showLogoutConfirmationDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);

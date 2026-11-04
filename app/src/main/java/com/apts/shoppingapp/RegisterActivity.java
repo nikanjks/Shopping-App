@@ -113,7 +113,7 @@ public class RegisterActivity extends AppCompatActivity {
                 fullName, address, phone, email, username, password);
 
         if (created) {
-            Toast.makeText(this, "Account created! Please log in.",
+            Toast.makeText(this, "Successful registration! Please log in.",
                     Toast.LENGTH_LONG).show();
             startActivity(new Intent(this, LoginActivity.class));
             finish();

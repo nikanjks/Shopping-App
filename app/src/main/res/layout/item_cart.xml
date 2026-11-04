@@ -26,8 +26,8 @@
 
             <ImageView
                 android:id="@+id/imgCartProduct"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginEnd="12dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/poppins"
-                    android:textColor="#666666"
+                    android:textColor="#00964B"
                     android:textSize="13sp"
                     tools:text="Price: ₱58.00 each" />
 
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:fontFamily="@font/poppins_semibold"
-                    android:textColor="@color/teal"
+                    android:textColor="@color/lightblue"
                     android:textSize="15sp"
                     tools:text="Subtotal: ₱58.00" />
 
