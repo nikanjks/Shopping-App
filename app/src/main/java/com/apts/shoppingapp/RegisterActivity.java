@@ -1,10 +1,13 @@
 package com.apts.shoppingapp;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +17,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText edtFullName, edtAddress, edtPhone, edtEmail, edtUsername, edtPassword;
     private DatabaseHelper databaseHelper;
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +33,11 @@ public class RegisterActivity extends AppCompatActivity {
         edtUsername = findViewById(R.id.edtRegUsername);
         edtPassword = findViewById(R.id.edtRegPassword);
 
+        ImageView imgTogglePassword = findViewById(R.id.imgToggleRegPassword);
         Button btnSignup = findViewById(R.id.btnSignup);
         TextView txtLoginHere = findViewById(R.id.txtLoginHere);
+
+        imgTogglePassword.setOnClickListener(v -> togglePasswordVisibility(imgTogglePassword));
 
         btnSignup.setOnClickListener(v -> attemptRegister());
 
@@ -38,6 +45,20 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         });
+    }
+
+    private void togglePasswordVisibility(ImageView imgToggle) {
+        isPasswordVisible = !isPasswordVisible;
+        Typeface typeface = edtPassword.getTypeface();
+        if (isPasswordVisible) {
+            edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            imgToggle.setImageResource(R.drawable.ic_visible);
+        } else {
+            edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imgToggle.setImageResource(R.drawable.ic_not_visible);
+        }
+        edtPassword.setTypeface(typeface);
+        edtPassword.setSelection(edtPassword.getText().length());
     }
 
     private void attemptRegister() {

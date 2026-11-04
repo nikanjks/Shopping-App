@@ -18,7 +18,9 @@ import com.apts.shoppingapp.CartItem;
 import com.apts.shoppingapp.DatabaseHelper;
 import com.apts.shoppingapp.Product;
 import com.apts.shoppingapp.R;
+import com.apts.shoppingapp.SessionManager;
 import com.apts.shoppingapp.databinding.FragmentHomeBinding;
+import com.apts.shoppingapp.databinding.ItemProductBinding;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -27,6 +29,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private DatabaseHelper databaseHelper;
+    private SessionManager sessionManager;
 
     @Nullable
     @Override
@@ -40,10 +43,25 @@ public class HomeFragment extends Fragment {
         );
 
         databaseHelper = new DatabaseHelper(requireContext());
+        sessionManager = new SessionManager(requireContext());
 
+        updateTitle();
         displayProducts();
 
         return binding.getRoot();
+    }
+
+    private void updateTitle() {
+        if (binding == null || sessionManager == null) {
+            return;
+        }
+
+        String fullName = sessionManager.getFullName();
+        if (fullName != null && !fullName.trim().isEmpty()) {
+            binding.txtDashboardTitle.setText("Hi, " + fullName.trim() + "!");
+        } else {
+            binding.txtDashboardTitle.setText("Hi, Customer!");
+        }
     }
 
     private void displayProducts() {
@@ -64,32 +82,71 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        for (Product product : products) {
-            addProductCard(productsContainer, product);
-        }
-    }
+        float density = getResources().getDisplayMetrics().density;
+        int marginPx = (int) (6 * density);
 
-    private void addProductCard(
-            LinearLayout container,
-            Product product) {
+        LinearLayout currentRow = null;
+        for (int i = 0; i < products.size(); i++) {
+            boolean isLeft = (i % 2 == 0);
 
-        LinearLayout card = new LinearLayout(requireContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(16, 16, 16, 16);
+            if (isLeft) {
+                currentRow = new LinearLayout(requireContext());
+                currentRow.setOrientation(LinearLayout.HORIZONTAL);
 
-        LinearLayout.LayoutParams cardParams =
-                new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT
                 );
+                currentRow.setLayoutParams(rowParams);
+                productsContainer.addView(currentRow);
+            }
 
-        cardParams.bottomMargin = 20;
-        card.setLayoutParams(cardParams);
-        card.setBackgroundResource(
-                android.R.drawable.dialog_holo_light_frame
+            View card = createProductCard(products.get(i), isLeft, currentRow);
+            currentRow.addView(card);
+        }
+
+        if (products.size() % 2 != 0 && currentRow != null) {
+            View placeholder = new View(requireContext());
+            LinearLayout.LayoutParams placeholderParams = new LinearLayout.LayoutParams(
+                    0,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    1.0f
+            );
+            placeholderParams.leftMargin = marginPx;
+            placeholderParams.bottomMargin = (int) (12 * density);
+            placeholder.setLayoutParams(placeholderParams);
+            placeholder.setVisibility(View.INVISIBLE);
+            currentRow.addView(placeholder);
+        }
+    }
+
+    private View createProductCard(Product product, boolean isLeft, ViewGroup parent) {
+        ItemProductBinding itemBinding = ItemProductBinding.inflate(
+                getLayoutInflater(),
+                parent,
+                false
         );
 
-        // Load the image supplied by the project resources.
+        float density = getResources().getDisplayMetrics().density;
+        int marginPx = (int) (6 * density);
+
+        LinearLayout.LayoutParams cardParams = (LinearLayout.LayoutParams) itemBinding.getRoot().getLayoutParams();
+        if (cardParams == null) {
+            cardParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+        } else {
+            cardParams.width = 0;
+            cardParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            cardParams.weight = 1.0f;
+        }
+        cardParams.bottomMargin = (int) (12 * density);
+        if (isLeft) {
+            cardParams.rightMargin = marginPx;
+        } else {
+            cardParams.leftMargin = marginPx;
+        }
+        itemBinding.getRoot().setLayoutParams(cardParams);
+
+        // Load image
         int imageId = getResources().getIdentifier(
                 product.getImageName(),
                 "drawable",
@@ -97,47 +154,22 @@ public class HomeFragment extends Fragment {
         );
 
         if (imageId != 0) {
-            ImageView productImage = new ImageView(requireContext());
-            productImage.setImageResource(imageId);
-            productImage.setContentDescription(product.getName());
-            productImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            productImage.setAdjustViewBounds(true);
-
-            LinearLayout.LayoutParams imageParams =
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            180
-                    );
-
-            imageParams.bottomMargin = 8;
-            card.addView(productImage, imageParams);
+            itemBinding.imgProduct.setImageResource(imageId);
+            itemBinding.imgProduct.setContentDescription(product.getName());
+            itemBinding.imgProduct.setVisibility(View.VISIBLE);
+        } else {
+            itemBinding.imgProduct.setVisibility(View.GONE);
         }
 
-        TextView name = new TextView(requireContext());
-        name.setText(product.getName());
-        name.setTextSize(18);
-        name.setTypeface(null, android.graphics.Typeface.BOLD);
-        card.addView(name);
-
-        TextView description = new TextView(requireContext());
-        description.setText(product.getDescription());
-        description.setTextSize(14);
-        card.addView(description);
-
-        TextView price = new TextView(requireContext());
-        price.setText(String.format(
+        itemBinding.txtProductName.setText(product.getName());
+        itemBinding.txtProductDescription.setText(product.getDescription());
+        itemBinding.txtProductPrice.setText(String.format(
                 Locale.getDefault(),
                 "₱%.2f",
                 product.getPrice()
         ));
-        price.setTextSize(16);
-        price.setPadding(0, 8, 0, 8);
-        card.addView(price);
 
-        Button addButton = new Button(requireContext());
-        addButton.setText("Add to Cart");
-
-        addButton.setOnClickListener(view -> {
+        itemBinding.btnAddToCart.setOnClickListener(view -> {
             boolean added = databaseHelper.addToCart(
                     product.getId(), 1
             );
@@ -157,8 +189,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        card.addView(addButton);
-        container.addView(card);
+        return itemBinding.getRoot();
     }
 
     @Override
@@ -166,6 +197,7 @@ public class HomeFragment extends Fragment {
         super.onResume();
 
         if (binding != null && databaseHelper != null) {
+            updateTitle();
             displayProducts();
         }
     }

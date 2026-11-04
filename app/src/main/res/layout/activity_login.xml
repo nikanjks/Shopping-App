@@ -3,11 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:padding="24dp">
@@ -15,9 +19,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login Security"
-            android:textColor="#000000"
-            android:textSize="20sp"
+            android:layout_gravity="center"
+
+            android:text="Login"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/purple"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <TextView
@@ -25,45 +32,80 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:text="Username"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/lightblue"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/edtLoginUsername"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="15dp"
             android:background="@drawable/input_box"
-            android:inputType="textNoSuggestions"
-            android:minHeight="48dp"
-            android:padding="12dp"
-            android:singleLine="true"
-            android:textColor="#000000" />
+            android:elevation="10dp"
+            android:fontFamily="@font/poppins"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/purple"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Password"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/lightblue"
+            android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/edtLoginPassword"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/input_box"
-            android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:padding="12dp"
-            android:singleLine="true"
-            android:textColor="#000000" />
+            android:layout_height="45dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="15dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <EditText
+                android:id="@+id/edtLoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/input_box"
+                android:elevation="6dp"
+                android:fontFamily="@font/poppins"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="48dp"
+                android:textColor="@color/purple"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/imgToggleLoginPassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="12dp"
+                android:clickable="true"
+                android:contentDescription="Show or hide password"
+                android:elevation="8dp"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_not_visible" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -74,16 +116,30 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="12dp"
-                android:text="Signup here"
-                android:textColor="#0645AD"
-                android:textSize="14sp" />
+                android:text="SIGNUP"
+                android:textColor="@color/purple"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/poppins"
+                android:background="@drawable/btn_back_loginhere"
+                android:elevation="8dp"
+                android:stateListAnimator="@null"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLogin"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Login" />
+                android:layout_marginLeft="15dp"
+                android:text="LOGIN"
+                android:letterSpacing="0.05"
+                android:elevation="8dp"
+                android:fontFamily="@font/funkybird"
+                android:background="@drawable/btn_login"
+                android:stateListAnimator="@null"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

@@ -8,15 +8,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/offwhite">
 
         <TextView
             android:id="@+id/txtDashboardTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Shopping Dashboard"
+            android:fontFamily="@font/poppins"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@color/purple"
             android:paddingBottom="8dp" />
 
         <TextView
@@ -25,6 +28,7 @@
             android:layout_height="wrap_content"
             android:text="Browse our available products."
             android:textSize="14sp"
+            android:textColor="@color/lightblue"
             android:paddingBottom="16dp" />
 
         <LinearLayout

@@ -5,7 +5,7 @@
     android:id="@+id/welcome_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/offwhite"
     android:fitsSystemWindows="true">
 
     <!-- Main content -->
@@ -30,27 +30,29 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="140dp"
-                android:layout_height="140dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:contentDescription="App logo"
-                android:src="@drawable/circle_logo" />
+                android:src="@drawable/shopit_logo" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="SHOPPING APP"
-                android:textColor="#000000"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:text="ShopIT"
+                android:textColor="@color/purple"
+                android:textSize="45sp"
+                android:fontFamily="@font/funkybird"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Shop easy, anytime."
-                android:textColor="#444444"
-                android:textSize="14sp" />
+                android:text="Shop.Instantly.Today"
+                android:textColor="@color/lightblue"
+                android:textSize="20sp"
+                android:textStyle="italic"
+                android:letterSpacing="0.1"
+                android:fontFamily="@font/poppins"/>
         </LinearLayout>
     </LinearLayout>
 

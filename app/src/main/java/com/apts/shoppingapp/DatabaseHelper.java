@@ -18,7 +18,7 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "shopping_app.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String TABLE_PRODUCTS = "products";
     private static final String TABLE_CART = "cart";
@@ -69,21 +69,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "FOREIGN KEY(order_id) REFERENCES orders(id))"
         );
 
-        insertProduct(db, "Classic T-Shirt",
-                "Comfortable everyday cotton shirt.",
-                299.00, "product_shirt");
+        insertProduct(db, "SOLMUX Advance",
+                "Carbocisteine + Zinc 4 Film-Coated Tablets Pack",
+                58.00, "prod_solmux");
 
-        insertProduct(db, "Canvas Tote Bag",
-                "Reusable bag for school and daily essentials.",
-                199.00, "product_bag");
+        insertProduct(db, "CELETEQUE Facial Wash",
+                "DermoScience Hydration Gentle Exfoliating Facial Wash 60ml",
+                133.00, "prod_celeteque");
 
-        insertProduct(db, "Running Shoes",
-                "Lightweight shoes for walking and exercise.",
-                1299.00, "product_shoes");
+        insertProduct(db, "Nizoral Dandruff Shampoo",
+                "ONE (1) SACHET ONLY (Contains 2% Ketoconazole) 6ml",
+                80.00, "prod_nizoral");
 
-        insertProduct(db, "Water Bottle",
-                "Reusable bottle for school or travel.",
-                149.00, "product_bottle");
+        insertProduct(db, "Efficascent Oil",
+                "Extra Strength 50ml (1 Bottle) Body Massage Oil",
+                78.00, "prod_efficascent");
     }
 
     private void insertProduct(
@@ -476,6 +476,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     ) {
         if (oldVersion < 2) {
             createUsersTable(db);
+        }
+        if (oldVersion < 3) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCTS);
+            db.execSQL(
+                    "CREATE TABLE " + TABLE_PRODUCTS + " (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "name TEXT NOT NULL, " +
+                            "description TEXT, " +
+                            "price REAL NOT NULL, " +
+                            "image_name TEXT)"
+            );
+            insertProduct(db, "SOLMUX Advance",
+                    "Carbocisteine + Zinc 4 Film-Coated Tablets Pack",
+                    58.00, "prod_solmux");
+            insertProduct(db, "CELETEQUE Facial Wash",
+                    "DermoScience Hydration Gentle Exfoliating Facial Wash 60ml",
+                    133.00, "prod_celeteque");
+            insertProduct(db, "Nizoral Dandruff Shampoo",
+                    "ONE (1) SACHET ONLY (Contains 2% Ketoconazole) 6ml",
+                    80.00, "prod_nizoral");
+            insertProduct(db, "Efficascent Oil",
+                    "Extra Strength 50ml (1 Bottle) Body Massage Oil",
+                    78.00, "prod_efficascent");
         }
     }
 }

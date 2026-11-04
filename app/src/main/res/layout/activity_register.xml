@@ -3,20 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:orientation="vertical"
         android:padding="24dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Account Registration"
-            android:textColor="#000000"
-            android:textSize="20sp"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/purple"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <TextView
@@ -24,124 +30,193 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Full Name"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/lightblue"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/edtFullName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="15dp"
             android:background="@drawable/input_box"
-            android:inputType="textPersonName|textCapWords"
-            android:minHeight="48dp"
-            android:padding="12dp"
-            android:singleLine="true"
-            android:textColor="#000000" />
+            android:elevation="10dp"
+            android:fontFamily="@font/poppins"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/purple"
+            android:textSize="16sp"
+            android:hint="FIRST NAME, MI, LAST NAME"
+            android:textColorHint="#83757575"            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Address"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/lightblue"
+            android:textSize="16sp"/>
 
         <EditText
             android:id="@+id/edtAddress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="15dp"
             android:background="@drawable/input_box"
-            android:inputType="textPostalAddress"
-            android:minHeight="48dp"
-            android:padding="12dp"
-            android:textColor="#000000" />
+            android:elevation="10dp"
+            android:fontFamily="@font/poppins"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/purple"
+            android:textSize="16sp"
+            android:hint="HOME NO., STREET, BRGY., CITY, PROVINCE"
+            android:textColorHint="#83757575"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Phone Number"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/lightblue"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/edtPhone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="15dp"
             android:background="@drawable/input_box"
+            android:elevation="10dp"
+            android:fontFamily="@font/poppins"
             android:inputType="phone"
-            android:minHeight="48dp"
-            android:padding="12dp"
-            android:singleLine="true"
-            android:textColor="#000000" />
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/purple"
+            android:textSize="16sp"
+            android:hint="e.g., 09123456789"
+            android:textColorHint="#83757575"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Email"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/lightblue"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/edtEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="15dp"
             android:background="@drawable/input_box"
+            android:elevation="10dp"
+            android:fontFamily="@font/poppins"
             android:inputType="textEmailAddress"
-            android:minHeight="48dp"
-            android:padding="12dp"
-            android:singleLine="true"
-            android:textColor="#000000" />
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/purple"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Username"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/lightblue"
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/edtRegUsername"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="15dp"
             android:background="@drawable/input_box"
-            android:inputType="textNoSuggestions"
-            android:minHeight="48dp"
-            android:padding="12dp"
-            android:singleLine="true"
-            android:textColor="#000000" />
+            android:elevation="10dp"
+            android:fontFamily="@font/poppins"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/purple"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Password"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/lightblue"
+            android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/edtRegPassword"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/input_box"
-            android:inputType="textPassword"
-            android:minHeight="48dp"
-            android:padding="12dp"
-            android:singleLine="true"
-            android:textColor="#000000" />
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="15dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <EditText
+                android:id="@+id/edtRegPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/input_box"
+                android:elevation="10dp"
+                android:fontFamily="@font/poppins"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="48dp"
+                android:textColor="@color/purple"
+                android:textSize="16sp"
+
+                android:hint="AT LEAST 6 DIGITS"
+                android:textColorHint="#83757575"/>
+
+            <ImageView
+                android:id="@+id/imgToggleRegPassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="12dp"
+                android:clickable="true"
+                android:contentDescription="Toggle password visibility"
+                android:elevation="12dp"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_not_visible" />
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="20dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -150,18 +225,33 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:elevation="8dp"
+                android:stateListAnimator="@null"
+                android:background="@drawable/btn_back_loginhere"
+
                 android:gravity="center"
                 android:padding="12dp"
-                android:text="Login here"
-                android:textColor="#0645AD"
-                android:textSize="14sp" />
+                android:text="BACK TO LOGIN"
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/purple"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSignup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Signup" />
+                android:text="Signup"
+                android:letterSpacing="0.05"
+                android:layout_marginLeft="15dp"
+                android:textSize="20dp"
+                android:textColor="@color/offwhite"
+                android:fontFamily="@font/funkybird"
+                android:background="@drawable/btn_signup"
+                android:elevation="8dp"
+                android:stateListAnimator="@null"
+                />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

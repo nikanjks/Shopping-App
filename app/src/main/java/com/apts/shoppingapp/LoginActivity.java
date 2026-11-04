@@ -1,9 +1,12 @@
 package com.apts.shoppingapp;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +18,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edtPassword;
     private DatabaseHelper databaseHelper;
     private SessionManager sessionManager;
+    private boolean isPasswordVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +30,11 @@ public class LoginActivity extends AppCompatActivity {
 
         edtUsername = findViewById(R.id.edtLoginUsername);
         edtPassword = findViewById(R.id.edtLoginPassword);
+        ImageView imgTogglePassword = findViewById(R.id.imgToggleLoginPassword);
         Button btnLogin = findViewById(R.id.btnLogin);
         TextView txtSignupHere = findViewById(R.id.txtSignupHere);
+
+        imgTogglePassword.setOnClickListener(v -> togglePasswordVisibility(imgTogglePassword));
 
         btnLogin.setOnClickListener(v -> attemptLogin());
 
@@ -35,6 +42,20 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(this, RegisterActivity.class));
             finish();
         });
+    }
+
+    private void togglePasswordVisibility(ImageView imgToggle) {
+        isPasswordVisible = !isPasswordVisible;
+        Typeface typeface = edtPassword.getTypeface();
+        if (isPasswordVisible) {
+            edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            imgToggle.setImageResource(R.drawable.ic_visible);
+        } else {
+            edtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            imgToggle.setImageResource(R.drawable.ic_not_visible);
+        }
+        edtPassword.setTypeface(typeface);
+        edtPassword.setSelection(edtPassword.getText().length());
     }
 
     private void attemptLogin() {
