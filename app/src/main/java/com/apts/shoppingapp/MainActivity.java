@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.appBarMain.toolbar);
 
         // The shopping app does not need the template's floating button.
-        binding.appBarMain.fab.setVisibility(View.GONE);
+        //binding.appBarMain.fab.setVisibility(View.GONE);
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;

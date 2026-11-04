@@ -70,16 +70,21 @@
             android:textStyle="bold"
             tools:text="₱58.00" />
 
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnAddToCart"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="Add to Cart"
+            android:background="@drawable/btn_addtocart"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="12sp"
-            app:backgroundTint="@color/purple"
-            app:cornerRadius="8dp" />
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="15sp"
+
+            android:shadowColor="#8F210544"
+            android:shadowDx="2"
+            android:shadowDy="3"
+            android:shadowRadius="3"/>
 
     </LinearLayout>
 

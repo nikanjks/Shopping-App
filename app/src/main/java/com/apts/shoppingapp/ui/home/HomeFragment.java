@@ -45,6 +45,14 @@ public class HomeFragment extends Fragment {
         databaseHelper = new DatabaseHelper(requireContext());
         sessionManager = new SessionManager(requireContext());
 
+        binding.btnViewCart.setOnClickListener(v ->
+                androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_gallery)
+        );
+
+        binding.btnOrderHistory.setOnClickListener(v ->
+                androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_slideshow)
+        );
+
         updateTitle();
         displayProducts();
 

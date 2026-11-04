@@ -47,10 +47,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Shop.Instantly.Today"
+                android:text="Shop•Instantly•Today"
                 android:textColor="@color/lightblue"
                 android:textSize="20sp"
-                android:textStyle="italic"
+                android:textStyle="italic|bold"
                 android:letterSpacing="0.1"
                 android:fontFamily="@font/poppins"/>
         </LinearLayout>

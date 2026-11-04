@@ -22,14 +22,55 @@
             android:textColor="@color/purple"
             android:paddingBottom="8dp" />
 
-        <TextView
-            android:id="@+id/txtDashboardMessage"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Browse our available products."
-            android:textSize="14sp"
-            android:textColor="@color/lightblue"
-            android:paddingBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnViewCart"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/btn_addtocart"
+                android:drawableStart="@drawable/baseline_shopping_cart_24"
+                android:drawablePadding="6dp"
+                android:drawableTint="@color/white"
+                android:elevation="4dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:stateListAnimator="@null"
+                android:text="View Cart"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnOrderHistory"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/btn_back_loginhere"
+                android:drawableStart="@drawable/baseline_history_24"
+                android:drawablePadding="6dp"
+                android:drawableTint="@color/purple"
+                android:elevation="4dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:stateListAnimator="@null"
+                android:text="Order History"
+                android:textAllCaps="false"
+                android:textColor="@color/purple"
+                android:textSize="14sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/productsContainer"
