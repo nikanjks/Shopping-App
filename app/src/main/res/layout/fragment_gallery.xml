@@ -16,7 +16,6 @@
 
         android:fontFamily="@font/poppins_semibold"
         android:letterSpacing="0.02"
-
         android:shadowColor="#8F210544"
         android:shadowDx="2"
         android:shadowDy="3"
@@ -28,7 +27,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:background="?android:attr/windowBackground"
+        android:background="@color/offwhite"
         android:paddingTop="8dp">
 
         <TextView
@@ -40,7 +39,8 @@
             android:textColor="@color/purple"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:paddingBottom="12dp" />
+            android:paddingBottom="12dp"
+            android:background="@color/offwhite"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCheckout"

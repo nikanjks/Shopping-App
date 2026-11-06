@@ -1,10 +1,11 @@
 package com.apts.shoppingapp.ui.slideshow;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.apts.shoppingapp.CartItem;
 import com.apts.shoppingapp.DatabaseHelper;
 import com.apts.shoppingapp.OrderSummary;
 import com.apts.shoppingapp.databinding.FragmentSlideshowBinding;
+import com.apts.shoppingapp.databinding.ItemOrderBinding;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -57,6 +59,16 @@ public class SlideshowFragment extends Fragment {
             TextView emptyMessage = new TextView(requireContext());
             emptyMessage.setText("You haven't placed any orders yet.");
             emptyMessage.setTextSize(16);
+            emptyMessage.setTextColor(Color.parseColor("#4fc0e8"));
+            emptyMessage.setGravity(Gravity.CENTER);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0,
+                    1.0f
+            );
+            emptyMessage.setLayoutParams(params);
+
             container.addView(emptyMessage);
             return;
         }
@@ -70,55 +82,27 @@ public class SlideshowFragment extends Fragment {
             LinearLayout container,
             OrderSummary order) {
 
-        LinearLayout card = new LinearLayout(requireContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(16, 16, 16, 16);
-        card.setBackgroundResource(
-                android.R.drawable.dialog_holo_light_frame
+        ItemOrderBinding itemBinding = ItemOrderBinding.inflate(
+                getLayoutInflater(),
+                container,
+                false
         );
 
-        LinearLayout.LayoutParams cardParams =
-                new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                );
-
-        cardParams.bottomMargin = 16;
-        card.setLayoutParams(cardParams);
-
-        TextView orderId = new TextView(requireContext());
-        orderId.setText("Order #" + order.getId());
-        orderId.setTextSize(18);
-        orderId.setTypeface(null, android.graphics.Typeface.BOLD);
-        card.addView(orderId);
-
-        TextView orderDate = new TextView(requireContext());
-        orderDate.setText("Date: " + order.getOrderDate());
-        orderDate.setTextSize(14);
-        card.addView(orderDate);
-
-        TextView orderTotal = new TextView(requireContext());
-        orderTotal.setText(String.format(
+        itemBinding.txtOrderId.setText("Order #" + order.getId());
+        itemBinding.txtOrderDate.setText("Date: " + order.getOrderDate());
+        itemBinding.txtOrderTotal.setText(String.format(
                 Locale.getDefault(),
-                "Total: ₱%.2f",
+                "₱%.2f",
                 order.getTotal()
         ));
-        orderTotal.setTextSize(16);
-        orderTotal.setPadding(0, 8, 0, 8);
-        card.addView(orderTotal);
 
-        TextView details = new TextView(requireContext());
-        details.setTextSize(14);
-        details.setVisibility(View.GONE);
-        card.addView(details);
+        itemBinding.txtOrderDetails.setVisibility(View.GONE);
+        itemBinding.btnToggleDetails.setText("View Order Details");
 
-        Button detailsButton = new Button(requireContext());
-        detailsButton.setText("View Order Details");
-
-        detailsButton.setOnClickListener(view -> {
-            if (details.getVisibility() == View.VISIBLE) {
-                details.setVisibility(View.GONE);
-                detailsButton.setText("View Order Details");
+        itemBinding.btnToggleDetails.setOnClickListener(view -> {
+            if (itemBinding.txtOrderDetails.getVisibility() == View.VISIBLE) {
+                itemBinding.txtOrderDetails.setVisibility(View.GONE);
+                itemBinding.btnToggleDetails.setText("View Order Details");
                 return;
             }
 
@@ -126,21 +110,16 @@ public class SlideshowFragment extends Fragment {
                     databaseHelper.getOrderItems(order.getId());
 
             if (items.isEmpty()) {
-                details.setText("No item details found for this order.");
+                itemBinding.txtOrderDetails.setText("No item details found for this order.");
             } else {
                 StringBuilder text = new StringBuilder();
 
                 for (CartItem item : items) {
-                    text.append(item.getName())
-                            .append("\nQuantity: ")
+                    text.append("• ")
+                            .append(item.getName())
+                            .append(" (Qty: ")
                             .append(item.getQuantity())
-                            .append("\nPrice: ")
-                            .append(String.format(
-                                    Locale.getDefault(),
-                                    "₱%.2f",
-                                    item.getPrice()
-                            ))
-                            .append("\nSubtotal: ")
+                            .append(")\n  Subtotal: ")
                             .append(String.format(
                                     Locale.getDefault(),
                                     "₱%.2f",
@@ -149,15 +128,14 @@ public class SlideshowFragment extends Fragment {
                             .append("\n\n");
                 }
 
-                details.setText(text.toString().trim());
+                itemBinding.txtOrderDetails.setText(text.toString().trim());
             }
 
-            details.setVisibility(View.VISIBLE);
-            detailsButton.setText("Hide Order Details");
+            itemBinding.txtOrderDetails.setVisibility(View.VISIBLE);
+            itemBinding.btnToggleDetails.setText("Hide Order Details");
         });
 
-        card.addView(detailsButton);
-        container.addView(card);
+        container.addView(itemBinding.getRoot());
     }
 
     @Override

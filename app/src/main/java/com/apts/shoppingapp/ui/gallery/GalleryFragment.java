@@ -2,6 +2,7 @@ package com.apts.shoppingapp.ui.gallery;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,15 @@ public class GalleryFragment extends Fragment {
             emptyMessage.setText("Your cart is empty.");
             emptyMessage.setTextSize(16);
             emptyMessage.setTextColor(Color.parseColor("#4fc0e8"));
+            emptyMessage.setGravity(Gravity.CENTER);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0,
+                    1.0f
+            );
+            emptyMessage.setLayoutParams(params);
+
             container.addView(emptyMessage);
         }
 

@@ -8,24 +8,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@color/offwhite">
 
         <TextView
             android:id="@+id/txtHistoryTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Order History"
+            android:text="My Order History"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:paddingBottom="8dp" />
+            android:paddingBottom="8dp"
 
-        <TextView
-            android:id="@+id/txtHistoryMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Your previous orders appear here."
-            android:textSize="14sp"
-            android:paddingBottom="16dp" />
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/purple"/>
+
 
         <LinearLayout
             android:id="@+id/ordersContainer"
