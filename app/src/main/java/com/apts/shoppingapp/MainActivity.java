@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showLogoutConfirmationDialog() {
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this, R.style.CustomAlertDialogTheme)
                 .setTitle("Logout")
                 .setMessage("Are you sure you want to log out of your account?")
                 .setPositiveButton("Logout", (dialog, which) -> performLogout())

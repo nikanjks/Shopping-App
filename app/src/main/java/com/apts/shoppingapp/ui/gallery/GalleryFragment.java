@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.apts.shoppingapp.CartItem;
 import com.apts.shoppingapp.DatabaseHelper;
+import com.apts.shoppingapp.R;
 import com.apts.shoppingapp.SessionManager;
 import com.apts.shoppingapp.databinding.FragmentGalleryBinding;
 import com.apts.shoppingapp.databinding.ItemCartBinding;
@@ -178,7 +179,7 @@ public class GalleryFragment extends Fragment {
 
         double total = databaseHelper.getCartTotal(username);
 
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
                 .setTitle("Confirm Checkout")
                 .setMessage(String.format(
                         Locale.getDefault(),

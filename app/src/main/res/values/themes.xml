@@ -22,4 +22,19 @@
     <style name="Theme.ShoppingApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.ShoppingApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="CustomAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:background">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="android:textColorPrimary">@color/purple</item>
+        <item name="android:textColorSecondary">@color/purple</item>
+        <item name="colorOnSurface">@color/purple</item>
+        <item name="colorPrimary">@color/purple</item>
+        <item name="buttonBarPositiveButtonStyle">@style/CustomAlertDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/CustomAlertDialogButtonStyle</item>
+    </style>
+
+    <style name="CustomAlertDialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/purple</item>
+    </style>
 </resources>
