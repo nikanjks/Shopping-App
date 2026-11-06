@@ -12,13 +12,14 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "shopping_app.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String TABLE_PRODUCTS = "products";
     private static final String TABLE_CART = "cart";
@@ -46,14 +47,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(
                 "CREATE TABLE " + TABLE_CART + " (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "product_id INTEGER NOT NULL UNIQUE, " +
+                        "username TEXT NOT NULL, " +
+                        "product_id INTEGER NOT NULL, " +
                         "quantity INTEGER NOT NULL CHECK(quantity > 0), " +
+                        "UNIQUE(username, product_id), " +
                         "FOREIGN KEY(product_id) REFERENCES products(id))"
         );
 
         db.execSQL(
                 "CREATE TABLE " + TABLE_ORDERS + " (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "username TEXT NOT NULL, " +
                         "order_date TEXT NOT NULL, " +
                         "total REAL NOT NULL)"
         );
@@ -133,8 +137,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // CART
 
-    public boolean addToCart(long productId, int quantity) {
-        if (quantity < 1) {
+    public boolean addToCart(String username, long productId, int quantity) {
+        if (quantity < 1 || username == null || username.trim().isEmpty()) {
             return false;
         }
 
@@ -157,8 +161,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try (Cursor cursor = db.query(
                 TABLE_CART,
                 new String[]{"quantity"},
-                "product_id = ?",
-                new String[]{String.valueOf(productId)},
+                "username = ? AND product_id = ?",
+                new String[]{username, String.valueOf(productId)},
                 null,
                 null,
                 null
@@ -172,21 +176,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return db.update(
                         TABLE_CART,
                         values,
-                        "product_id = ?",
-                        new String[]{String.valueOf(productId)}
+                        "username = ? AND product_id = ?",
+                        new String[]{username, String.valueOf(productId)}
                 ) > 0;
             }
         }
 
         ContentValues values = new ContentValues();
+        values.put("username", username);
         values.put("product_id", productId);
         values.put("quantity", quantity);
 
         return db.insert(TABLE_CART, null, values) != -1;
     }
 
-    public ArrayList<CartItem> getCartItems() {
+    public ArrayList<CartItem> getCartItems(String username) {
         ArrayList<CartItem> items = new ArrayList<>();
+        if (username == null || username.trim().isEmpty()) {
+            return items;
+        }
         SQLiteDatabase db = getReadableDatabase();
 
         String query =
@@ -194,9 +202,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "p.image_name, c.quantity " +
                         "FROM cart c " +
                         "INNER JOIN products p ON c.product_id = p.id " +
+                        "WHERE c.username = ? " +
                         "ORDER BY p.id ASC";
 
-        try (Cursor cursor = db.rawQuery(query, null)) {
+        try (Cursor cursor = db.rawQuery(query, new String[]{username})) {
             while (cursor.moveToNext()) {
                 items.add(new CartItem(
                         cursor.getLong(cursor.getColumnIndexOrThrow("id")),
@@ -212,9 +221,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return items;
     }
 
-    public boolean updateCartQuantity(long productId, int quantity) {
+    public boolean updateCartQuantity(String username, long productId, int quantity) {
+        if (username == null || username.trim().isEmpty()) {
+            return false;
+        }
         if (quantity <= 0) {
-            return removeFromCart(productId);
+            return removeFromCart(username, productId);
         }
 
         ContentValues values = new ContentValues();
@@ -223,29 +235,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return getWritableDatabase().update(
                 TABLE_CART,
                 values,
-                "product_id = ?",
-                new String[]{String.valueOf(productId)}
+                "username = ? AND product_id = ?",
+                new String[]{username, String.valueOf(productId)}
         ) > 0;
     }
 
-    public boolean removeFromCart(long productId) {
+    public boolean removeFromCart(String username, long productId) {
+        if (username == null || username.trim().isEmpty()) {
+            return false;
+        }
         return getWritableDatabase().delete(
                 TABLE_CART,
-                "product_id = ?",
-                new String[]{String.valueOf(productId)}
+                "username = ? AND product_id = ?",
+                new String[]{username, String.valueOf(productId)}
         ) > 0;
     }
 
-    public double getCartTotal() {
+    public double getCartTotal(String username) {
         double total = 0;
+        if (username == null || username.trim().isEmpty()) {
+            return total;
+        }
         SQLiteDatabase db = getReadableDatabase();
 
         String query =
                 "SELECT COALESCE(SUM(p.price * c.quantity), 0) AS total " +
                         "FROM cart c " +
-                        "INNER JOIN products p ON c.product_id = p.id";
+                        "INNER JOIN products p ON c.product_id = p.id " +
+                        "WHERE c.username = ?";
 
-        try (Cursor cursor = db.rawQuery(query, null)) {
+        try (Cursor cursor = db.rawQuery(query, new String[]{username})) {
             if (cursor.moveToFirst()) {
                 total = cursor.getDouble(0);
             }
@@ -256,14 +275,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // ORDERS
 
-    public long checkout() {
+    public long checkout(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return -1;
+        }
         SQLiteDatabase db = getWritableDatabase();
         long orderId = -1;
 
         db.beginTransaction();
 
         try {
-            ArrayList<CartItem> items = getCartItems();
+            ArrayList<CartItem> items = getCartItems(username);
 
             if (items.isEmpty()) {
                 return -1;
@@ -281,6 +303,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ).format(new Date());
 
             ContentValues orderValues = new ContentValues();
+            orderValues.put("username", username);
             orderValues.put("order_date", orderDate);
             orderValues.put("total", total);
 
@@ -309,7 +332,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
 
-            db.delete(TABLE_CART, null, null);
+            db.delete(TABLE_CART, "username = ?", new String[]{username});
             db.setTransactionSuccessful();
 
         } catch (Exception e) {
@@ -321,27 +344,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return orderId;
     }
 
-    public ArrayList<OrderSummary> getOrders() {
+    public ArrayList<OrderSummary> getOrders(String username) {
         ArrayList<OrderSummary> orders = new ArrayList<>();
+        if (username == null || username.trim().isEmpty()) {
+            return orders;
+        }
         SQLiteDatabase db = getReadableDatabase();
 
         try (Cursor cursor = db.query(
                 TABLE_ORDERS,
                 null,
+                "username = ?",
+                new String[]{username},
                 null,
                 null,
-                null,
-                null,
-                "id DESC"
+                "id ASC"
         )) {
+            int orderNumber = 1;
             while (cursor.moveToNext()) {
                 orders.add(new OrderSummary(
                         cursor.getLong(cursor.getColumnIndexOrThrow("id")),
+                        orderNumber++,
                         cursor.getString(cursor.getColumnIndexOrThrow("order_date")),
                         cursor.getDouble(cursor.getColumnIndexOrThrow("total"))
                 ));
             }
         }
+
+        Collections.reverse(orders);
 
         return orders;
     }
@@ -392,7 +422,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean usernameExists(String username) {
         SQLiteDatabase db = getReadableDatabase();
-
         try (Cursor cursor = db.query(
                 TABLE_USERS,
                 new String[]{"id"},
@@ -408,7 +437,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean registerUser(String fullName, String address, String phone,
                                 String email, String username, String password) {
+        SQLiteDatabase db = getWritableDatabase();
         String salt = generateSalt();
+        String passwordHash = hashPassword(password, salt);
 
         ContentValues values = new ContentValues();
         values.put("full_name", fullName);
@@ -416,10 +447,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("phone", phone);
         values.put("email", email);
         values.put("username", username);
+        values.put("password_hash", passwordHash);
         values.put("salt", salt);
-        values.put("password_hash", hashPassword(password, salt));
 
-        return getWritableDatabase().insert(TABLE_USERS, null, values) != -1;
+        return db.insert(TABLE_USERS, null, values) != -1;
     }
 
     /** Returns the user's full name if the login is correct, otherwise null. */
@@ -499,6 +530,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             insertProduct(db, "Efficascent Oil",
                     "Extra Strength 50ml (1 Bottle) Body Massage Oil",
                     78.00, "prod_efficascent");
+        }
+        if (oldVersion < 4) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_CART);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDERS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_ORDER_ITEMS);
+
+            db.execSQL(
+                    "CREATE TABLE " + TABLE_CART + " (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "username TEXT NOT NULL, " +
+                            "product_id INTEGER NOT NULL, " +
+                            "quantity INTEGER NOT NULL CHECK(quantity > 0), " +
+                            "UNIQUE(username, product_id), " +
+                            "FOREIGN KEY(product_id) REFERENCES products(id))"
+            );
+
+            db.execSQL(
+                    "CREATE TABLE " + TABLE_ORDERS + " (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "username TEXT NOT NULL, " +
+                            "order_date TEXT NOT NULL, " +
+                            "total REAL NOT NULL)"
+            );
+
+            db.execSQL(
+                    "CREATE TABLE " + TABLE_ORDER_ITEMS + " (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                            "order_id INTEGER NOT NULL, " +
+                            "product_id INTEGER NOT NULL, " +
+                            "product_name TEXT NOT NULL, " +
+                            "price REAL NOT NULL, " +
+                            "quantity INTEGER NOT NULL, " +
+                            "FOREIGN KEY(order_id) REFERENCES orders(id))"
+            );
         }
     }
 }

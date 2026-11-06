@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.apts.shoppingapp.CartItem;
 import com.apts.shoppingapp.DatabaseHelper;
 import com.apts.shoppingapp.OrderSummary;
+import com.apts.shoppingapp.SessionManager;
 import com.apts.shoppingapp.databinding.FragmentSlideshowBinding;
 import com.apts.shoppingapp.databinding.ItemOrderBinding;
 
@@ -26,6 +27,7 @@ public class SlideshowFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;
     private DatabaseHelper databaseHelper;
+    private SessionManager sessionManager;
 
     @Nullable
     @Override
@@ -39,6 +41,7 @@ public class SlideshowFragment extends Fragment {
         );
 
         databaseHelper = new DatabaseHelper(requireContext());
+        sessionManager = new SessionManager(requireContext());
 
         displayOrders();
 
@@ -53,7 +56,7 @@ public class SlideshowFragment extends Fragment {
         LinearLayout container = binding.ordersContainer;
         container.removeAllViews();
 
-        ArrayList<OrderSummary> orders = databaseHelper.getOrders();
+        ArrayList<OrderSummary> orders = databaseHelper.getOrders(sessionManager.getUsername());
 
         if (orders.isEmpty()) {
             TextView emptyMessage = new TextView(requireContext());
@@ -88,7 +91,7 @@ public class SlideshowFragment extends Fragment {
                 false
         );
 
-        itemBinding.txtOrderId.setText("Order #" + order.getId());
+        itemBinding.txtOrderId.setText("Order #" + order.getOrderNumber());
         itemBinding.txtOrderDate.setText("Date: " + order.getOrderDate());
         itemBinding.txtOrderTotal.setText(String.format(
                 Locale.getDefault(),

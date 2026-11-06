@@ -68,18 +68,21 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.nav_logout) {
                 showLogoutConfirmationDialog();
                 return true;
+            } else if (id == R.id.nav_home) {
+                navController.popBackStack(R.id.nav_home, false);
+                return true;
             } else {
-                return NavigationUI.onNavDestinationSelected(item, navController) || item.getItemId() == R.id.nav_home;
+                return NavigationUI.onNavDestinationSelected(item, navController);
             }
         });
     }
 
     private void showLogoutConfirmationDialog() {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("Logout")
-                .setMessage("Are you sure you want to log out?")
-                .setPositiveButton("Yes", (dialog, which) -> performLogout())
-                .setNegativeButton("No", null)
+                .setMessage("Are you sure you want to log out of your account?")
+                .setPositiveButton("Logout", (dialog, which) -> performLogout())
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 

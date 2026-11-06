@@ -179,7 +179,9 @@ public class HomeFragment extends Fragment {
 
         itemBinding.btnAddToCart.setOnClickListener(view -> {
             boolean added = databaseHelper.addToCart(
-                    product.getId(), 1
+                    sessionManager.getUsername(),
+                    product.getId(),
+                    1
             );
 
             if (added) {

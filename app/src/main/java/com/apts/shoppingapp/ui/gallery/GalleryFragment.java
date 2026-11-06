@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.apts.shoppingapp.CartItem;
 import com.apts.shoppingapp.DatabaseHelper;
+import com.apts.shoppingapp.SessionManager;
 import com.apts.shoppingapp.databinding.FragmentGalleryBinding;
 import com.apts.shoppingapp.databinding.ItemCartBinding;
 
@@ -26,6 +27,7 @@ public class GalleryFragment extends Fragment {
 
     private FragmentGalleryBinding binding;
     private DatabaseHelper databaseHelper;
+    private SessionManager sessionManager;
 
     @Nullable
     @Override
@@ -39,6 +41,7 @@ public class GalleryFragment extends Fragment {
         );
 
         databaseHelper = new DatabaseHelper(requireContext());
+        sessionManager = new SessionManager(requireContext());
 
         binding.btnCheckout.setOnClickListener(view -> checkout());
 
@@ -55,7 +58,8 @@ public class GalleryFragment extends Fragment {
         LinearLayout container = binding.cartItemsContainer;
         container.removeAllViews();
 
-        ArrayList<CartItem> items = databaseHelper.getCartItems();
+        String username = sessionManager.getUsername();
+        ArrayList<CartItem> items = databaseHelper.getCartItems(username);
 
         if (items.isEmpty()) {
             TextView emptyMessage = new TextView(requireContext());
@@ -82,7 +86,7 @@ public class GalleryFragment extends Fragment {
                 String.format(
                         Locale.getDefault(),
                         "Total: ₱%.2f",
-                        databaseHelper.getCartTotal()
+                        databaseHelper.getCartTotal(username)
                 )
         );
 
@@ -129,6 +133,7 @@ public class GalleryFragment extends Fragment {
 
         itemBinding.btnDecreaseQty.setOnClickListener(view -> {
             databaseHelper.updateCartQuantity(
+                    sessionManager.getUsername(),
                     item.getProductId(),
                     item.getQuantity() - 1
             );
@@ -137,6 +142,7 @@ public class GalleryFragment extends Fragment {
 
         itemBinding.btnIncreaseQty.setOnClickListener(view -> {
             databaseHelper.updateCartQuantity(
+                    sessionManager.getUsername(),
                     item.getProductId(),
                     item.getQuantity() + 1
             );
@@ -144,7 +150,10 @@ public class GalleryFragment extends Fragment {
         });
 
         itemBinding.btnRemoveCartItem.setOnClickListener(view -> {
-            databaseHelper.removeFromCart(item.getProductId());
+            databaseHelper.removeFromCart(
+                    sessionManager.getUsername(),
+                    item.getProductId()
+            );
             Toast.makeText(
                     requireContext(),
                     item.getName() + " removed from cart.",
@@ -157,7 +166,8 @@ public class GalleryFragment extends Fragment {
     }
 
     private void checkout() {
-        if (databaseHelper.getCartItems().isEmpty()) {
+        String username = sessionManager.getUsername();
+        if (databaseHelper.getCartItems(username).isEmpty()) {
             Toast.makeText(
                     requireContext(),
                     "Your cart is empty. Please add an item first.",
@@ -166,12 +176,27 @@ public class GalleryFragment extends Fragment {
             return;
         }
 
-        long orderId = databaseHelper.checkout();
+        double total = databaseHelper.getCartTotal(username);
+
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Confirm Checkout")
+                .setMessage(String.format(
+                        Locale.getDefault(),
+                        "Are you sure you want to place this order?\n\nTotal Amount: ₱%.2f",
+                        total
+                ))
+                .setPositiveButton("Place Order", (dialog, which) -> performCheckout(username))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void performCheckout(String username) {
+        long orderId = databaseHelper.checkout(username);
 
         if (orderId > 0) {
             Toast.makeText(
                     requireContext(),
-                    "Checkout successful! Order #" + orderId,
+                    "Successfully placed an order",
                     Toast.LENGTH_LONG
             ).show();
 
